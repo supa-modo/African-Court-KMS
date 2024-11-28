@@ -16,7 +16,7 @@ import {
 import PdfIcon from "../assets/images/pdf_icon.png";
 import WordIcon from "../assets/images/word.png";
 import ExcelIcon from "../assets/images/excel.png";
-import PptIcon from "../assets/images/powerpoint.png";
+import PptIcon from "../assets/images/powerpoint2.png";
 import BgImage from "../assets/images/hammer3.png";
 
 //TODO: Mock data (replace with actual API calls)
@@ -37,7 +37,7 @@ const mockDocuments = [
     fileUrl: "/sample-document.pdf",
   },
   {
-    id: 1,
+    id: 2,
     title: "Q3 Financial Report",
     description: "Quarterly financial analysis and insights",
     file: "pdf",
@@ -51,7 +51,7 @@ const mockDocuments = [
     fileUrl: "/sample-document.pdf",
   },
   {
-    id: 1,
+    id: 3,
     title: "Q3 Financial Report",
     description: "Quarterly financial analysis and insights",
     file: "excel",
@@ -65,7 +65,7 @@ const mockDocuments = [
     fileUrl: "/sample-document.pdf",
   },
   {
-    id: 1,
+    id: 4,
     title: "Q3 Financial Report",
     description: "Quarterly financial analysis and insights",
     file: "pdf",
@@ -79,7 +79,7 @@ const mockDocuments = [
     fileUrl: "/sample-document.word",
   },
   {
-    id: 1,
+    id: 5,
     title: "Q3 Financial Report",
     description: "Quarterly financial analysis and insights",
     file: "ppt",
@@ -94,7 +94,7 @@ const mockDocuments = [
   },
 
   {
-    id: 1,
+    id: 6,
     title: "Report on Lorem ipsum dolor sit amet consectetur",
     description: "Quarterly financial analysis and insights",
     file: "word",
@@ -109,6 +109,7 @@ const mockDocuments = [
   },
 
   {
+    id: 7,
     title: "Annual Financial Report and Analysis for the Year 2023",
     file: "pdf",
     tags: ["finance", "annual", "report", "budget", "growth", "forecasting"],
@@ -119,6 +120,7 @@ const mockDocuments = [
     uploadDate: "February 15, 2023",
   },
   {
+    id: 8,
     title: "Internal Memo on Policy Updates for Workplace Conduct",
     file: "word",
     tags: ["memo", "policy", "workplace", "conduct"],
@@ -129,6 +131,7 @@ const mockDocuments = [
     uploadDate: "April 04, 2024",
   },
   {
+    id: 9,
     title: "Q1 Sales Data and Performance Review Excel Sheet",
     file: "excel",
     tags: ["sales", "Q1", "performance", "excel", "revenue", "growth"],
@@ -139,6 +142,7 @@ const mockDocuments = [
     uploadDate: "January 30, 2011",
   },
   {
+    id: 10,
     title: "Client Meeting Notes - September 2024",
     file: "word",
     tags: ["meeting", "client", "notes", "discussion", "follow-up"],
@@ -149,6 +153,7 @@ const mockDocuments = [
     uploadDate: "September 20, 2024",
   },
   {
+    id: 11,
     title: "Company Budget and Financial Planning Overview for 2025",
     file: "excel",
     tags: ["budget", "financial", "planning", "forecast", "analysis"],
@@ -159,6 +164,7 @@ const mockDocuments = [
     uploadDate: "August 08, 2010",
   },
   {
+    id: 12,
     title: "Executive Presentation - Year End Review 2023",
     file: "ppt",
     tags: ["executive", "review", "presentation", "performance", "ppt"],
@@ -301,7 +307,7 @@ const HomePage = () => {
 
   return (
     <div
-      className="min-h-screen p-8"
+      className="h-screen overflow-y-auto p-8"
       style={{ backgroundImage: `url(${BgImage})` }}
     >
       {/* Gold Background Color Overlay */}
@@ -319,11 +325,14 @@ const HomePage = () => {
               <input
                 type="text"
                 placeholder="Search documents..."
-                className="w-full px-3 py-2 pl-10 border rounded-lg"
+                className="w-full px-3 pl-14 py-2 border font-semibold border-customMaroon rounded-xl"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <Search
+                size={19}
+                className="absolute left-5 top-1/2 transform -translate-y-1/2 text-customMaroon"
+              />
             </div>
           </div>
 
