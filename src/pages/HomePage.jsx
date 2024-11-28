@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import DocumentPreviewModal from "../components/DocumentPreviewModal";
 import {
   FolderOpen,
   Grid3X3,
@@ -14,18 +15,20 @@ import WordIcon from "../assets/images/word.png";
 import ExcelIcon from "../assets/images/excel.png";
 import PptIcon from "../assets/images/powerpoint.png";
 
-// Mock data (replace with actual API calls)
+//TODO: Mock data (replace with actual API calls)
 const mockDocuments = [
   {
     id: 1,
-    title: "Q3 Financial Report",
-    description: "Quarterly financial analysis and insights",
+    title: "Company Budget and Financial Planning Overview for 2025",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eaque non unde iure natus amet ipsam, ratione ullam nesciunt nulla accusamus libero quasi dolores, repellat quo pariatur! Blanditiis, laudantium voluptas. Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque sapiente nisi molestias, doloremque porro dolorem quod saepe officia accusantium aut unde, labore molestiae obcaecati laboriosam a deserunt dolore veritatis officiis!",
     file: "pdf",
     category: "Finance",
     author: "John Doe",
     uploadDate: "2023-11-15",
     originalLanguage: "English",
     tags: ["Finance", "Q3", "Report"],
+    translations: ["FR", "SP", "SW", "AR"],
     contributors: ["Jane Smith", "Mike Johnson"],
     fileUrl: "/sample-document.pdf",
   },
@@ -39,6 +42,7 @@ const mockDocuments = [
     uploadDate: "2023-11-15",
     originalLanguage: "English",
     tags: ["Finance", "Q3", "Report"],
+    translations: ["FR", "SP", "PT"],
     contributors: ["Jane Smith", "Mike Johnson"],
     fileUrl: "/sample-document.pdf",
   },
@@ -52,6 +56,7 @@ const mockDocuments = [
     uploadDate: "2023-11-15",
     originalLanguage: "English",
     tags: ["Finance", "Q3", "Report"],
+    translations: ["FR", "SP", "PT"],
     contributors: ["Jane Smith", "Mike Johnson"],
     fileUrl: "/sample-document.pdf",
   },
@@ -65,6 +70,7 @@ const mockDocuments = [
     uploadDate: "2023-11-15",
     originalLanguage: "English",
     tags: ["Finance", "Q3", "Report"],
+    translations: ["FR", "SP", "PT"],
     contributors: ["Jane Smith", "Mike Johnson"],
     fileUrl: "/sample-document.word",
   },
@@ -78,6 +84,7 @@ const mockDocuments = [
     uploadDate: "2023-11-15",
     originalLanguage: "English",
     tags: ["Finance", "Q3", "Report"],
+    translations: ["FR", "SP", "PT"],
     contributors: ["Jane Smith", "Mike Johnson"],
     fileUrl: "/sample-document.ppt",
   },
@@ -91,6 +98,7 @@ const mockDocuments = [
     author: "John Smith Doe",
     uploadDate: "2023-11-15",
     originalLanguage: "English",
+    translations: ["FR", "SP", "PT"],
     tags: ["Finance", "Q3", "Report"],
     contributors: ["Jane Smith", "Mike Johnson"],
     fileUrl: "/sample-document.excel",
@@ -287,91 +295,6 @@ const HomePage = () => {
     setFilteredDocuments(filtered);
   }, [searchTerm, activeTab, documents]);
 
-  // Document Preview Modal
-  const DocumentPreviewModal = ({ document, onClose }) => {
-    if (!document) return null;
-
-    return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-        <div className="bg-white rounded-xl shadow-2xl w-4/5 h-4/5 flex">
-          {/* Document Preview */}
-          <div className="w-1/2 p-6 border-r">
-            <div className="h-full bg-gray-100 rounded-lg flex items-center justify-center">
-              <iframe
-                src={document.fileUrl}
-                className="w-full h-full"
-                title="Document Preview"
-              />
-            </div>
-          </div>
-
-          {/* Document Details */}
-          <div className="w-1/2 p-6">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold">{document.title}</h2>
-              <button
-                onClick={onClose}
-                className="text-gray-600 hover:text-red-500"
-              >
-                <X size={24} />
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <p className="font-semibold">Description</p>
-                <p className="text-gray-600">{document.description}</p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="font-semibold">Author</p>
-                  <p>{document.author}</p>
-                </div>
-                <div>
-                  <p className="font-semibold">Upload Date</p>
-                  <p>{document.uploadDate}</p>
-                </div>
-              </div>
-
-              <div>
-                <p className="font-semibold">Contributors</p>
-                <div className="flex space-x-2">
-                  {document.contributors.map((contributor) => (
-                    <span
-                      key={contributor}
-                      className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm"
-                    >
-                      {contributor}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <p className="font-semibold">Tags</p>
-                <div className="flex flex-wrap gap-2">
-                  {document.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="bg-gray-100 text-gray-800 px-2 py-1 rounded-full text-sm"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <button className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 flex items-center justify-center">
-                <Download className="mr-2" /> Download Document
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   // Gallery View Component
   const GalleryView = () => (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -506,6 +429,10 @@ const HomePage = () => {
           />
         )}
       </div>
+      <DocumentPreviewModal
+        document={selectedDocument}
+        onClose={() => setSelectedDocument(null)}
+      />
     </div>
   );
 };
