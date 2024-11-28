@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import DocumentPreviewModal from "../components/DocumentPreviewModal";
+import GalleryView from "../components/GalleryView";
+import ListView from "../components/ListView";
 import {
   FolderOpen,
   Grid3X3,
@@ -9,11 +11,13 @@ import {
   FileText,
   Download,
   X,
+  LucideArrowDownUp,
 } from "lucide-react";
 import PdfIcon from "../assets/images/pdf_icon.png";
 import WordIcon from "../assets/images/word.png";
 import ExcelIcon from "../assets/images/excel.png";
 import PptIcon from "../assets/images/powerpoint.png";
+import BgImage from "../assets/images/hammer3.png";
 
 //TODO: Mock data (replace with actual API calls)
 const mockDocuments = [
@@ -295,140 +299,120 @@ const HomePage = () => {
     setFilteredDocuments(filtered);
   }, [searchTerm, activeTab, documents]);
 
-  // Gallery View Component
-  const GalleryView = () => (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      {filteredDocuments.map((doc) => (
-        <div
-          key={doc.id}
-          className="bg-white rounded-xl shadow-md p-4 hover:shadow-lg transition-all cursor-pointer"
-          onClick={() => setSelectedDocument(doc)}
-        >
-          <div className="flex justify-center mb-4">
-            <img
-              src={FILE_ICONS[doc.file] || FILE_ICONS.default}
-              alt="File Icon"
-              className="w-24 h-24 object-contain"
-            />
-          </div>
-          <h3 className="text-center font-semibold text-gray-800 mb-2">
-            {doc.title}
-          </h3>
-          <p className="text-center text-gray-500 text-sm">
-            {doc.author} | {doc.uploadDate}
-          </p>
-        </div>
-      ))}
-    </div>
-  );
-
-  // List View Component
-  const ListView = () => (
-    <div className="bg-white rounded-xl shadow-md overflow-x-auto">
-      <table className="w-full">
-        <thead className="bg-gray-100 border-b">
-          <tr>
-            <th className="p-4 text-left">Title</th>
-            <th className="p-4 text-left">Category</th>
-            <th className="p-4 text-left">Author</th>
-            <th className="p-4 text-left">Upload Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredDocuments.map((doc) => (
-            <tr
-              key={doc.id}
-              className="border-b hover:bg-gray-50 cursor-pointer"
-              onClick={() => setSelectedDocument(doc)}
-            >
-              <td className="p-4">{doc.title}</td>
-              <td className="p-4">{doc.category}</td>
-              <td className="p-4">{doc.author}</td>
-              <td className="p-4">{doc.uploadDate}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8 flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-gray-800">
-            Document Management
-          </h1>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-blue-700">
-            <Upload className="mr-2" /> Upload Document
-          </button>
-        </div>
+    <div
+      className="min-h-screen p-8"
+      style={{ backgroundImage: `url(${BgImage})` }}
+    >
+      {/* Gold Background Color Overlay */}
+      <div className="absolute inset-0 bg-customGold opacity-85 z-0"></div>
+      <div className="relative z-10 ">
+        <div className="max-w-screen-2xl mx-auto">
+          {/* Header */}
+          <div className="mb-8 flex space-x-4 justify-between items-center">
+            <h1 className="text-2xl font-bold text-gray-800 pr-6">
+              AfCHPR Knowledge Management System
+            </h1>
 
-        {/* Search and Filters */}
-        <div className="mb-6 flex justify-between items-center">
-          <div className="relative flex-grow mr-4">
-            <input
-              type="text"
-              placeholder="Search documents..."
-              className="w-full p-3 pl-10 border rounded-lg"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            {/* Search Bar */}
+            <div className="relative flex-grow mr-4">
+              <input
+                type="text"
+                placeholder="Search documents..."
+                className="w-full px-3 py-2 pl-10 border rounded-lg"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            </div>
           </div>
 
-          <div className="flex space-x-2">
-            <button
-              className={`p-2 rounded ${viewMode === VIEW_MODES.GALLERY ? "bg-blue-600 text-white" : "bg-white text-gray-600"}`}
-              onClick={() => setViewMode(VIEW_MODES.GALLERY)}
-            >
-              <Grid3X3 />
-            </button>
-            <button
-              className={`p-2 rounded ${viewMode === VIEW_MODES.LIST ? "bg-blue-600 text-white" : "bg-white text-gray-600"}`}
-              onClick={() => setViewMode(VIEW_MODES.LIST)}
-            >
-              <List />
-            </button>
-          </div>
-        </div>
-
-        {/* Access Level Tabs */}
-        <div className="mb-6 flex space-x-4">
-          {[
-            { key: "public", label: "Public Files", icon: FolderOpen },
-            { key: "department", label: "Department Files", icon: FileText },
-            { key: "unit", label: "Unit Files", icon: FileText },
-          ].map((tab) => (
-            <button
-              key={tab.key}
-              className={`
-                flex items-center px-4 py-2 rounded-lg 
+          {/* Search and Filters */}
+          <div className="mb-6 flex justify-between items-center">
+            {/* Access Level Tabs */}
+            <div className="flex space-x-4 font-semibold">
+              {[
+                { key: "public", label: "Public Files", icon: FolderOpen },
+                {
+                  key: "department",
+                  label: "Department Files",
+                  icon: FileText,
+                },
+                { key: "unit", label: "Unit Files", icon: FileText },
+              ].map((tab) => (
+                <button
+                  key={tab.key}
+                  className={`
+                flex items-center px-6 py-2 rounded-lg 
                 ${
                   activeTab === tab.key
-                    ? "bg-blue-600 text-white"
-                    : "bg-white text-gray-600 hover:bg-gray-100"
+                    ? "bg-customMaroon text-white"
+                    : "bg-white bg-opacity-70 text-gray-600 hover:bg-gray-100"
                 }
               `}
-              onClick={() => setActiveTab(tab.key)}
-            >
-              <tab.icon className="mr-2" /> {tab.label}
-            </button>
-          ))}
+                  onClick={() => setActiveTab(tab.key)}
+                >
+                  <tab.icon className="mr-2" /> {tab.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex space-x-4 ">
+              {/* Upload document button */}
+              <button className="bg-white bg-opacity-70 text-gray-600 font-semibold px-10 py-2 rounded-md flex items-center hover:bg-customMaroon hover:bg-opacity-90 hover:text-white  mr-4">
+                <Upload className="mr-3" /> Upload New Document
+              </button>
+              <button className="bg-white bg-opacity-70 w-auto text-gray-600 px-8 rounded-md py-2 font-semibold hover:bg-customMaroon hover:bg-opacity-90 hover:text-white flex items-center gap-3">
+                Date Uploaded
+                <LucideArrowDownUp size={19} />
+              </button>
+              <div className="flex items-center border border-customMaroon rounded-md overflow-hidden">
+                <button
+                  className={`flex-1 p-2 ${viewMode === VIEW_MODES.GALLERY ? "bg-customMaroon text-white" : "bg-white bg-opacity-50 text-gray-600"}`}
+                  onClick={() => setViewMode(VIEW_MODES.GALLERY)}
+                >
+                  <Grid3X3 />
+                </button>
+                <div className="w-px bg-gray-300"></div>
+                <button
+                  className={`flex-1 p-2 ${viewMode === VIEW_MODES.LIST ? "bg-customMaroon text-white" : "bg-white bg-opacity-50 text-gray-600"}`}
+                  onClick={() => setViewMode(VIEW_MODES.LIST)}
+                >
+                  <List />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Documents View */}
+          <div>
+            {viewMode === VIEW_MODES.GALLERY ? (
+              <GalleryView
+                documents={filteredDocuments}
+                fileIcons={FILE_ICONS}
+                onDocumentClick={setSelectedDocument}
+              />
+            ) : (
+              <ListView documents={filteredDocuments} />
+            )}
+            {selectedDocument && (
+              <DocumentPreviewModal
+                document={selectedDocument}
+                onClose={() => setSelectedDocument(null)}
+              />
+            )}
+          </div>
+
+          {/* Document Preview Modal */}
+          {selectedDocument && (
+            <DocumentPreviewModal
+              document={selectedDocument}
+              onClose={() => setSelectedDocument(null)}
+            />
+          )}
         </div>
-
-        {/* Documents View */}
-        {viewMode === VIEW_MODES.GALLERY ? <GalleryView /> : <ListView />}
-
-        {/* Document Preview Modal */}
-        {selectedDocument && (
-          <DocumentPreviewModal
-            document={selectedDocument}
-            onClose={() => setSelectedDocument(null)}
-          />
-        )}
       </div>
+
       <DocumentPreviewModal
         document={selectedDocument}
         onClose={() => setSelectedDocument(null)}

@@ -6,7 +6,7 @@ const DocumentPreviewModal = ({ document, onClose }) => {
   if (!document) return null;
 
   return (
-    <div className="fixed inset-0  bg-opacity-60 z-50 flex justify-center items-center backdrop-blur-sm">
+    <div className="fixed inset-0 bg-gray-800 bg-opacity-45 z-50 flex justify-center items-center">
       <div className="relative h-[70vh] w-[85vw] lg:w-[60vw] lg:h-[75vh] max-w-5xl bg-white rounded-lg shadow-lg p-4 flex">
         <button
           onClick={onClose}
