@@ -18,6 +18,7 @@ import WordIcon from "../assets/images/word.png";
 import ExcelIcon from "../assets/images/excel.png";
 import PptIcon from "../assets/images/powerpoint2.png";
 import BgImage from "../assets/images/hammer3.png";
+import Header from "../components/Header";
 
 //TODO: Mock data (replace with actual API calls)
 const mockDocuments = [
@@ -306,52 +307,54 @@ const HomePage = () => {
   }, [searchTerm, activeTab, documents]);
 
   return (
-    <div
-      className="h-screen overflow-y-auto p-8"
-      style={{ backgroundImage: `url(${BgImage})` }}
-    >
-      {/* Gold Background Color Overlay */}
-      <div className="absolute inset-0 bg-customGold opacity-85 z-0"></div>
-      <div className="relative z-10 ">
-        <div className="max-w-screen-2xl mx-auto">
-          {/* Header */}
-          <div className="mb-8 flex space-x-4 justify-between items-center">
-            <h1 className="text-2xl font-bold text-gray-800 pr-6">
-              AfCHPR Knowledge Management System
-            </h1>
+    <div>
+      <Header />
+      <div
+        className="h-[calc(100vh-5.5rem)] overflow-y-auto p-8"
+        style={{ backgroundImage: `url(${BgImage})` }}
+      >
+        {/* Gold Background Color Overlay */}
+        <div className="absolute inset-0 bg-customGold opacity-85 z-0"></div>
+        <div className="relative z-10 ">
+          <div className="max-w-screen-2xl mx-auto">
+            {/* Header */}
+            <div className="mb-8 flex space-x-4 justify-between items-center">
+              <h1 className="text-2xl font-bold text-gray-700 pr-6">
+                AfCHPR Knowledge Management System
+              </h1>
 
-            {/* Search Bar */}
-            <div className="relative flex-grow mr-4">
-              <input
-                type="text"
-                placeholder="Search documents..."
-                className="w-full px-3 pl-14 py-2 border font-semibold border-customMaroon rounded-xl"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <Search
-                size={19}
-                className="absolute left-5 top-1/2 transform -translate-y-1/2 text-customMaroon"
-              />
+              {/* Search Bar */}
+              <div className="relative flex-grow mr-4">
+                <input
+                  type="text"
+                  placeholder="Search document title, name or author....."
+                  className="w-full px-3 pl-14 py-2 border font-semibold border-customMaroon rounded-xl"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <Search
+                  size={19}
+                  className="absolute left-5 top-1/2 transform -translate-y-1/2 text-customMaroon"
+                />
+              </div>
             </div>
-          </div>
 
-          {/* Search and Filters */}
-          <div className="mb-6 flex justify-between items-center">
-            {/* Access Level Tabs */}
-            <div className="flex space-x-4 font-semibold">
-              {[
-                { key: "public", label: "Public Files", icon: FolderOpen },
-                {
-                  key: "department",
-                  label: "Department Files",
-                  icon: FileText,
-                },
-                { key: "unit", label: "Unit Files", icon: FileText },
-              ].map((tab) => (
-                <button
-                  key={tab.key}
-                  className={`
+            {/* Search and Filters */}
+            <div className="mb-6 flex justify-between items-center">
+              {/* Access Level Tabs */}
+              <div className="flex space-x-4 font-semibold">
+                {[
+                  { key: "public", label: "Public Files", icon: FolderOpen },
+                  {
+                    key: "department",
+                    label: "Department Files",
+                    icon: FileText,
+                  },
+                  { key: "unit", label: "Unit Files", icon: FileText },
+                ].map((tab) => (
+                  <button
+                    key={tab.key}
+                    className={`
                 flex items-center px-6 py-2 rounded-lg 
                 ${
                   activeTab === tab.key
@@ -359,51 +362,60 @@ const HomePage = () => {
                     : "bg-white bg-opacity-70 text-gray-600 hover:bg-gray-100"
                 }
               `}
-                  onClick={() => setActiveTab(tab.key)}
-                >
-                  <tab.icon className="mr-2" /> {tab.label}
-                </button>
-              ))}
-            </div>
+                    onClick={() => setActiveTab(tab.key)}
+                  >
+                    <tab.icon className="mr-2" /> {tab.label}
+                  </button>
+                ))}
+              </div>
 
-            <div className="flex space-x-4 ">
-              {/* Upload document button */}
-              <button className="bg-white bg-opacity-70 text-gray-600 font-semibold px-10 py-2 rounded-md flex items-center hover:bg-customMaroon hover:bg-opacity-90 hover:text-white  mr-4">
-                <Upload className="mr-3" /> Upload New Document
-              </button>
-              <button className="bg-white bg-opacity-70 w-auto text-gray-600 px-8 rounded-md py-2 font-semibold hover:bg-customMaroon hover:bg-opacity-90 hover:text-white flex items-center gap-3">
-                Date Uploaded
-                <LucideArrowDownUp size={19} />
-              </button>
-              <div className="flex items-center border border-customMaroon rounded-md overflow-hidden">
-                <button
-                  className={`flex-1 p-2 ${viewMode === VIEW_MODES.GALLERY ? "bg-customMaroon text-white" : "bg-white bg-opacity-50 text-gray-600"}`}
-                  onClick={() => setViewMode(VIEW_MODES.GALLERY)}
-                >
-                  <Grid3X3 />
+              <div className="flex space-x-4 ">
+                {/* Upload document button */}
+                <button className="bg-white bg-opacity-70 text-gray-600 font-semibold px-10 py-2 rounded-md flex items-center hover:bg-customMaroon hover:bg-opacity-90 hover:text-white  mr-4">
+                  <Upload className="mr-3" /> Upload New Document
                 </button>
-                <div className="w-px bg-gray-300"></div>
-                <button
-                  className={`flex-1 p-2 ${viewMode === VIEW_MODES.LIST ? "bg-customMaroon text-white" : "bg-white bg-opacity-50 text-gray-600"}`}
-                  onClick={() => setViewMode(VIEW_MODES.LIST)}
-                >
-                  <List />
+                <button className="bg-white bg-opacity-70 w-auto text-gray-600 px-8 rounded-md py-2 font-semibold hover:bg-customMaroon hover:bg-opacity-90 hover:text-white flex items-center gap-3">
+                  Date Uploaded
+                  <LucideArrowDownUp size={19} />
                 </button>
+                <div className="flex items-center border border-customMaroon rounded-md overflow-hidden">
+                  <button
+                    className={`flex-1 p-2 ${viewMode === VIEW_MODES.GALLERY ? "bg-customMaroon text-white" : "bg-white bg-opacity-50 text-gray-600"}`}
+                    onClick={() => setViewMode(VIEW_MODES.GALLERY)}
+                  >
+                    <Grid3X3 />
+                  </button>
+                  <div className="w-px bg-gray-300"></div>
+                  <button
+                    className={`flex-1 p-2 ${viewMode === VIEW_MODES.LIST ? "bg-customMaroon text-white" : "bg-white bg-opacity-50 text-gray-600"}`}
+                    onClick={() => setViewMode(VIEW_MODES.LIST)}
+                  >
+                    <List />
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Documents View */}
-          <div>
-            {viewMode === VIEW_MODES.GALLERY ? (
-              <GalleryView
-                documents={filteredDocuments}
-                fileIcons={FILE_ICONS}
-                onDocumentClick={setSelectedDocument}
-              />
-            ) : (
-              <ListView documents={filteredDocuments} />
-            )}
+            {/* Documents View */}
+            <div>
+              {viewMode === VIEW_MODES.GALLERY ? (
+                <GalleryView
+                  documents={filteredDocuments}
+                  fileIcons={FILE_ICONS}
+                  onDocumentClick={setSelectedDocument}
+                />
+              ) : (
+                <ListView documents={filteredDocuments} />
+              )}
+              {selectedDocument && (
+                <DocumentPreviewModal
+                  document={selectedDocument}
+                  onClose={() => setSelectedDocument(null)}
+                />
+              )}
+            </div>
+
+            {/* Document Preview Modal */}
             {selectedDocument && (
               <DocumentPreviewModal
                 document={selectedDocument}
@@ -411,21 +423,13 @@ const HomePage = () => {
               />
             )}
           </div>
-
-          {/* Document Preview Modal */}
-          {selectedDocument && (
-            <DocumentPreviewModal
-              document={selectedDocument}
-              onClose={() => setSelectedDocument(null)}
-            />
-          )}
         </div>
-      </div>
 
-      <DocumentPreviewModal
-        document={selectedDocument}
-        onClose={() => setSelectedDocument(null)}
-      />
+        <DocumentPreviewModal
+          document={selectedDocument}
+          onClose={() => setSelectedDocument(null)}
+        />
+      </div>
     </div>
   );
 };

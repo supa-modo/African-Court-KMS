@@ -3,9 +3,9 @@ import { formatDate } from "../utils/dateTimeFunctions";
 
 const GalleryView = ({ documents, fileIcons, onDocumentClick }) => {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+    <div className="grid grid-cols-2 md:grid-cols-3 custom-md-lg:grid-cols-4 custom-lg:grid-cols-6 gap-6">
       {documents.map((doc) => (
-        <div
+        <div 
           key={doc.id}
           className="bg-white bg-opacity-60 hover:bg-gray-100 rounded-xl shadow-md p-4 hover:shadow-lg transition duration-300 ease-in-out cursor-pointer"
           onClick={() => onDocumentClick(doc)}

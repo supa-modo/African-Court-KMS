@@ -8,6 +8,10 @@ module.exports = {
         customMaroon: "rgb(159, 34, 65)",
         customGold: "rgb(180, 162, 105)",
       },
+      screens: {
+        "custom-md-lg": "960px",
+        "custom-lg": "1280px",
+      },
       fontFamily: {
         inter: ["Inter", "sans-serif"],
       },
