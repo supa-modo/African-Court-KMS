@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import DocumentPreviewModal from "../components/DocumentPreviewModal";
 import GalleryView from "../components/GalleryView";
 import ListView from "../components/ListView";
@@ -286,6 +287,7 @@ const HomePage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [activeTab, setActiveTab] = useState("public");
+  const navigate = useNavigate();
 
   // Filter documents based on search and access levels
   useEffect(() => {
@@ -371,7 +373,10 @@ const HomePage = () => {
 
               <div className="flex space-x-4 ">
                 {/* Upload document button */}
-                <button className="bg-white bg-opacity-70 text-gray-600 font-semibold px-10 py-2 rounded-md flex items-center hover:bg-customMaroon hover:bg-opacity-90 hover:text-white  mr-4">
+                <button
+                  onClick={() => navigate("/upload")}
+                  className="bg-white bg-opacity-70 text-gray-600 font-semibold px-10 py-2 rounded-md flex items-center hover:bg-customMaroon hover:bg-opacity-90 hover:text-white  mr-4"
+                >
                   <Upload className="mr-3" /> Upload New Document
                 </button>
                 <button className="bg-white bg-opacity-70 w-auto text-gray-600 px-8 rounded-md py-2 font-semibold hover:bg-customMaroon hover:bg-opacity-90 hover:text-white flex items-center gap-3">
@@ -405,7 +410,10 @@ const HomePage = () => {
                   onDocumentClick={setSelectedDocument}
                 />
               ) : (
-                <ListView documents={filteredDocuments} />
+                <ListView
+                  documents={filteredDocuments}
+                  onDocumentClick={setSelectedDocument}
+                />
               )}
               {selectedDocument && (
                 <DocumentPreviewModal

@@ -8,6 +8,7 @@ import {
 import { AuthProvider } from "./context/AuthContext";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
+import DocumentUploadScreen from "./pages/UploadDocumentPage";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/home" element={<HomePage />} />
+          <Route path="/upload" element={<DocumentUploadScreen />} />
           <Route path="/" element={<Navigate to="/login" replace />} />
         </Routes>
       </Router>

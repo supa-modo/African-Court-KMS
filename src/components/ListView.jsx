@@ -18,7 +18,7 @@ const FILE_ICONS = {
   default: "/src/assets/images/default_icon.png", // Fallback icon
 };
 
-const ListView = ({ documents }) => {
+const ListView = ({ documents, onDocumentClick }) => {
   return (
     <div className="rounded-2xl shadow-md overflow-x-auto">
       <table className="min-w-full table-auto bg-white bg-opacity-60 shadow-md overflow-hidden rounded-t-2xl">
@@ -44,8 +44,9 @@ const ListView = ({ documents }) => {
 
             return (
               <tr
-                key={index}
-                className="border-b border-b-gray-200 hover:bg-customGold hover:bg-opacity-70 transition duration-200"
+                key={doc.id}
+                onClick={() => onDocumentClick(doc)}
+                className="border-b border-b-gray-200 hover:bg-customGold hover:bg-opacity-70 cursor-pointer transition duration-200"
               >
                 <td className="px-4 py-4 font-medium w-12 text-center">
                   {index + 1}.
