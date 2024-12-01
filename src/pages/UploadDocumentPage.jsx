@@ -119,7 +119,7 @@ const DocumentUploadScreen = () => {
         <div className="absolute inset-0 bg-customGold opacity-85 z-0"></div>
         <div className="relative z-10 ">
           <div className="max-w-screen-xl mx-auto">
-                <div className="bg-white shadow-lg rounded-2xl p-8 relative mx-auto">
+            <div className="bg-white bg-opacity-70 shadow-lg rounded-2xl p-8 relative mx-auto">
               {/* Close Button */}
               <button
                 onClick={() => navigate(-1)}
@@ -210,7 +210,7 @@ const DocumentUploadScreen = () => {
                       name="privacy"
                       value={formData.privacy}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-customMaroon"
+                      className="w-full px-4 py-3 border rounded-lg font-semibold text-gray-500 focus:outline-none focus:ring-2 focus:ring-customMaroon"
                     >
                       {PRIVACY_OPTIONS.map((option) => (
                         <option key={option} value={option}>
@@ -227,7 +227,7 @@ const DocumentUploadScreen = () => {
                       name="language"
                       value={formData.language}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-customMaroon"
+                      className="w-full px-4 py-3 border rounded-lg font-semibold text-gray-500 focus:outline-none focus:ring-2 focus:ring-customMaroon"
                     >
                       {LANGUAGES.map((lang) => (
                         <option key={lang.value} value={lang.value}>
@@ -254,7 +254,7 @@ const DocumentUploadScreen = () => {
                           value={category}
                           checked={formData.categories.includes(category)}
                           onChange={handleChange}
-                          className="form-checkbox text-customMaroon"
+                          className="form-checkbox  text-customMaroon"
                         />
                         <span className="ml-2">{category}</span>
                       </label>
@@ -273,7 +273,7 @@ const DocumentUploadScreen = () => {
                       name="tags"
                       value={formData.tags}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-customMaroon"
+                      className="w-full px-4 py-3 border rounded-lg font-semibold text-gray-500 focus:outline-none focus:ring-2 focus:ring-customMaroon"
                       placeholder="Comma-separated tags"
                     />
                   </div>
@@ -307,7 +307,7 @@ const DocumentUploadScreen = () => {
                         <label className="block text-gray-700 font-semibold mb-2">
                           {lang.label} Document
                         </label>
-                        <div className="relative border-2 border-dashed rounded-md p-2">
+                        <div className="relative border-2 border-gray-400 border-dotted  rounded-md p-2">
                           <input
                             type="file"
                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
@@ -362,7 +362,7 @@ const DocumentUploadScreen = () => {
                 <div className="flex justify-center mt-8">
                   <button
                     type="submit"
-                    className="flex items-center px-6 py-3 bg-customMaroon text-white rounded-lg hover:bg-customMaroonHover transition-colors"
+                    className="flex font-semibold items-center px-14 py-[10px] bg-customMaroon text-white rounded-lg hover:bg-customMaroonHover transition-colors"
                   >
                     <SaveIcon className="mr-2" />
                     Upload Document

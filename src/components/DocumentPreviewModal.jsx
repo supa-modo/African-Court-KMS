@@ -7,7 +7,7 @@ const DocumentPreviewModal = ({ document, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-45 z-50 flex justify-center items-center">
-      <div className="relative h-[70vh] w-[85vw] lg:w-[60vw] lg:h-[75vh] max-w-5xl bg-white rounded-lg shadow-lg p-4 flex">
+      <div className="relative h-[70vh] w-[85vw] lg:w-[60vw] md:h-[80vh] max-w-5xl bg-white rounded-lg shadow-lg p-4 flex">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-customMaroon hover:text-gray-800 focus:outline-none"
