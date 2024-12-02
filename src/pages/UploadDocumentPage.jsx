@@ -1,107 +1,182 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { XIcon, SaveIcon, Upload } from "lucide-react";
+import { XIcon, SaveIcon, Upload, TagIcon, UserIcon } from "lucide-react";
 import Header from "../components/Header";
 import BgImage from "../assets/images/hammer3.png";
 
-// Constants
+// Enhanced Constants with More Comprehensive Options
 const LANGUAGES = [
-  { value: "English", label: "English" },
-  { value: "Swahili", label: "Swahili" },
-  { value: "Portuguese", label: "Portuguese" },
-  { value: "Arabic", label: "Arabic" },
-  { value: "Spanish", label: "Spanish" },
-  { value: "French", label: "French" },
+  { value: "English", label: "English", code: "en" },
+  { value: "Swahili", label: "Swahili", code: "sw" },
+  { value: "Portuguese", label: "Portuguese", code: "pt" },
+  { value: "Arabic", label: "Arabic", code: "ar" },
+  { value: "Spanish", label: "Spanish", code: "es" },
+  { value: "French", label: "French", code: "fr" },
 ];
 
-const UNITS = ["Unit 1", "Unit 2", "Unit 3", "Unit 4"];
-const PRIVACY_OPTIONS = ["Public", "Staff", "Internal"];
-const DOCUMENT_TYPES = ["Word", "Excel", "PDF", "PPT"];
-const CATEGORIES = ["Report", "Advert", "Memo"];
+// Enhanced Document Categories
+const DOCUMENT_CATEGORIES = [
+  { value: "Administrative", label: "Administrative" },
+  { value: "Financial", label: "Financial Reports" },
+  { value: "HR", label: "Human Resources" },
+  { value: "Legal", label: "Legal Documents" },
+  { value: "Marketing", label: "Marketing Materials" },
+  { value: "Operations", label: "Operations Manual" },
+  { value: "Project", label: "Project Documentation" },
+  { value: "Research", label: "Research Papers" },
+  { value: "Technical", label: "Technical Specifications" },
+];
 
-// Utility function for local testing
-const saveToLocalStorage = (data) => {
-  const existingData = JSON.parse(localStorage.getItem("documents") || "[]");
-  localStorage.setItem("documents", JSON.stringify([...existingData, data]));
+// Predefined System Tags
+const SYSTEM_TAGS = [
+  "Confidential",
+  "Strategic",
+  "Annual",
+  "Quarterly",
+  "Internal",
+  "External",
+  "Compliance",
+  "Budget",
+];
+
+// Privacy Levels with Hierarchical Structure
+const PRIVACY_LEVELS = [
+  {
+    value: "Public",
+    label: "Public",
+    description: "Accessible to everyone",
+  },
+  {
+    value: "Organization",
+    label: "Entire Organization",
+    description: "Accessible to all employees",
+  },
+  {
+    value: "Department",
+    label: "Department Level",
+    description: "Restricted to specific department",
+  },
+  {
+    value: "Unit",
+    label: "Unit Level",
+    description: "Restricted to specific unit",
+  },
+];
+
+// Departments and Units (Mock Data - replace with actual organization structure)
+const DEPARTMENTS = [
+  "Finance",
+  "Human Resources",
+  "IT",
+  "Marketing",
+  "Sales",
+  "Operations",
+  "Legal",
+  "Research & Development",
+];
+
+const UNITS = {
+  Finance: ["Accounting", "Financial Planning", "Investments"],
+  HR: ["Recruitment", "Training", "Employee Relations"],
+  IT: ["Infrastructure", "Development", "Security"],
+  // Add more departments and their units
 };
 
 const DocumentUploadScreen = () => {
   const navigate = useNavigate();
-  const [selectedFiles, setSelectedFiles] = useState(Array(6).fill(null));
+  const [selectedFiles, setSelectedFiles] = useState(LANGUAGES.map(() => null));
   const [formData, setFormData] = useState({
     title: "",
-    numberOfPages: "",
     description: "",
-    unit: UNITS[0],
-    privacy: PRIVACY_OPTIONS[0],
-    language: LANGUAGES[0].value,
+    numberOfPages: "",
+    originalLanguage: LANGUAGES[0].value,
+    privacyLevel: PRIVACY_LEVELS[0].value,
+    department: "",
+    unit: "",
     categories: [],
-    tags: "",
-    documentType: DOCUMENT_TYPES[0],
+    systemTags: [],
+    customTags: "",
     author: "",
     contributors: "",
+    documentType: "",
   });
 
-  // Memoized file input handler to prevent unnecessary re-renders
-  const handleFileChange = useMemo(
-    () => (index, file) => {
-      const updatedFiles = [...selectedFiles];
-      updatedFiles[index] = file;
-      setSelectedFiles(updatedFiles);
-    },
-    [selectedFiles]
-  );
-
-  // Generic change handler with improved type handling
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-
-    setFormData((prev) => {
-      if (type === "checkbox") {
-        return {
-          ...prev,
-          categories: checked
-            ? [...prev.categories, value]
-            : prev.categories.filter((cat) => cat !== value),
-        };
-      }
-      return { ...prev, [name]: value };
-    });
+  // Enhanced File Upload Handler
+  const handleFileChange = (index, file) => {
+    const updatedFiles = [...selectedFiles];
+    updatedFiles[index] = file;
+    setSelectedFiles(updatedFiles);
   };
 
-  // Form submission handler with improved error handling
+  // Dynamic Department and Unit Management
+  useEffect(() => {
+    // Reset unit when department changes
+    setFormData((prev) => ({
+      ...prev,
+      unit: "",
+    }));
+  }, [formData.department]);
+
+  // Tag Suggestion Logic (Simplified)
+  const getSuggestedTags = (input) => {
+    return SYSTEM_TAGS.filter((tag) =>
+      tag.toLowerCase().includes(input.toLowerCase())
+    );
+  };
+
+  const handleChange = (e) => {
+    const { name, value, type } = e.target;
+
+    // Handle checkbox for categories
+    if (type === "checkbox") {
+      const checkboxValue = e.target.value;
+      setFormData((prev) => ({
+        ...prev,
+        categories: prev.categories.includes(checkboxValue)
+          ? prev.categories.filter((cat) => cat !== checkboxValue)
+          : [...prev.categories, checkboxValue],
+      }));
+      return;
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const dataToUpload = new FormData();
+    const formDataToSubmit = new FormData();
 
-    // Dynamically append form data
+    // Append all form fields
     Object.entries(formData).forEach(([key, value]) => {
-      if (key !== "categories") {
-        dataToUpload.append(key, value);
+      if (Array.isArray(value)) {
+        formDataToSubmit.append(key, value.join(","));
+      } else {
+        formDataToSubmit.append(key, value);
       }
     });
-
-    // Append categories as a comma-separated string
-    dataToUpload.append("categories", formData.categories.join(","));
 
     // Append files
     selectedFiles.forEach((file, index) => {
       if (file) {
-        dataToUpload.append(`file${index + 1}`, file);
+        formDataToSubmit.append(`file_${LANGUAGES[index].code}`, file);
       }
     });
 
     try {
-      // Simulated backend upload (replace with actual endpoint)
-      // const response = await axios.post('/api/documents', dataToUpload);
+      // Placeholder for actual API endpoint
+      // const response = await axios.post('/api/documents/upload', formDataToSubmit);
 
-      // Local testing fallback
-      saveToLocalStorage({ ...formData, files: selectedFiles });
-
+      console.log(
+        "Document upload data:",
+        Object.fromEntries(formDataToSubmit)
+      );
       alert("Document uploaded successfully!");
-      navigate("/documents"); // Navigate to document list
+      navigate("/documents");
     } catch (error) {
       console.error("Upload failed:", error);
       alert("Failed to upload document. Please try again.");
@@ -127,15 +202,14 @@ const DocumentUploadScreen = () => {
               >
                 <XIcon className="w-6 h-6" />
               </button>
-
-              <h2 className="text-3xl font-bold text-center text-customMaroon mb-8">
-                Upload New Document
+              <h2 className="text-3xl font-bold text-center text-customMaroon mb-6">
+                Document Upload Center
               </h2>
 
               <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Main Document Details */}
+                {/* Document Basic Information */}
                 <div className="flex gap-4">
-                  <div className="w-3/4">
+                  <div className="w-2/3">
                     <label className="block text-gray-700 font-semibold mb-2">
                       Document Title
                     </label>
@@ -149,7 +223,7 @@ const DocumentUploadScreen = () => {
                       required
                     />
                   </div>
-                  <div className="w-1/4">
+                  <div className="w-1/3">
                     <label className="block text-gray-700 font-semibold mb-2">
                       Number of Pages
                     </label>
@@ -166,66 +240,29 @@ const DocumentUploadScreen = () => {
                   </div>
                 </div>
 
-                {/* Description */}
-                <div>
-                  <label className="block text-gray-700 font-semibold mb-2">
-                    Description
-                  </label>
-                  <textarea
-                    name="description"
-                    value={formData.description}
-                    onChange={handleChange}
-                    rows={4}
-                    className="w-full px-4 py-3 border rounded-lg font-semibold text-gray-500 focus:outline-none focus:ring-2 focus:ring-customMaroon"
-                    placeholder="Brief document description"
-                    required
-                  />
-                </div>
-
-                {/* Metadata Selects */}
-                <div className="grid md:grid-cols-3 gap-6">
-                  <div>
+                {/* Description and Language */}
+                <div className="flex gap-4">
+                  <div className="w-2/3">
                     <label className="block text-gray-700 font-semibold mb-2">
-                      Unit
+                      Description
                     </label>
-                    <select
-                      name="unit"
-                      value={formData.unit}
+                    <textarea
+                      name="description"
+                      value={formData.description}
                       onChange={handleChange}
+                      rows={4}
                       className="w-full px-4 py-3 border rounded-lg font-semibold text-gray-500 focus:outline-none focus:ring-2 focus:ring-customMaroon"
+                      placeholder="Brief document description"
                       required
-                    >
-                      {UNITS.map((unit) => (
-                        <option key={unit} value={unit}>
-                          {unit}
-                        </option>
-                      ))}
-                    </select>
+                    />
                   </div>
-                  <div>
+                  <div className="w-1/3">
                     <label className="block text-gray-700 font-semibold mb-2">
-                      Privacy
+                      Original Language
                     </label>
                     <select
-                      name="privacy"
-                      value={formData.privacy}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border rounded-lg font-semibold text-gray-500 focus:outline-none focus:ring-2 focus:ring-customMaroon"
-                    >
-                      {PRIVACY_OPTIONS.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-gray-700 font-semibold mb-2">
-                      Language
-                    </label>
-                    <select
-                      name="language"
-                      value={formData.language}
+                      name="originalLanguage"
+                      value={formData.originalLanguage}
                       onChange={handleChange}
                       className="w-full px-4 py-3 border rounded-lg font-semibold text-gray-500 focus:outline-none focus:ring-2 focus:ring-customMaroon"
                     >
@@ -238,68 +275,129 @@ const DocumentUploadScreen = () => {
                   </div>
                 </div>
 
+                {/* Privacy and Access Control */}
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-gray-700 font-semibold mb-2">
+                      Privacy Level
+                    </label>
+                    <select
+                      name="privacyLevel"
+                      value={formData.privacyLevel}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border rounded-lg font-semibold text-gray-500 focus:outline-none focus:ring-2 focus:ring-customMaroon"
+                    >
+                      {PRIVACY_LEVELS.map((level) => (
+                        <option key={level.value} value={level.value}>
+                          {level.label} - {level.description}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  {(formData.privacyLevel === "Department" ||
+                    formData.privacyLevel === "Unit") && (
+                    <div>
+                      <label className="block text-gray-700 font-semibold mb-2">
+                        {formData.privacyLevel === "Department"
+                          ? "Select Department"
+                          : "Select Unit"}
+                      </label>
+                      <select
+                        name={
+                          formData.privacyLevel === "Department"
+                            ? "department"
+                            : "unit"
+                        }
+                        value={
+                          formData.privacyLevel === "Department"
+                            ? formData.department
+                            : formData.unit
+                        }
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border rounded-lg font-semibold text-gray-500 focus:outline-none focus:ring-2 focus:ring-customMaroon"
+                      >
+                        {formData.privacyLevel === "Department" ? (
+                          DEPARTMENTS.map((dept) => (
+                            <option key={dept} value={dept}>
+                              {dept}
+                            </option>
+                          ))
+                        ) : formData.department ? (
+                          UNITS[formData.department].map((unit) => (
+                            <option key={unit} value={unit}>
+                              {unit}
+                            </option>
+                          ))
+                        ) : (
+                          <option>Select Department First</option>
+                        )}
+                      </select>
+                    </div>
+                  )}
+                </div>
+
                 {/* Categories */}
                 <div>
                   <label className="block text-gray-700 font-semibold mb-2">
-                    Categories
+                    Document Categories
                   </label>
-                  <div className="flex space-x-4">
-                    {CATEGORIES.map((category) => (
+                  <div className="flex flex-wrap gap-4">
+                    {DOCUMENT_CATEGORIES.map((category) => (
                       <label
-                        key={category}
+                        key={category.value}
                         className="inline-flex items-center"
                       >
                         <input
                           type="checkbox"
-                          value={category}
-                          checked={formData.categories.includes(category)}
+                          value={category.value}
+                          checked={formData.categories.includes(category.value)}
                           onChange={handleChange}
-                          className="form-checkbox  text-customMaroon"
+                          className="form-checkbox text-customMaroon"
                         />
-                        <span className="ml-2">{category}</span>
+                        <span className="ml-2 font-semibold text-gray-600">
+                          {category.label}
+                        </span>
                       </label>
                     ))}
                   </div>
                 </div>
 
-                {/* Additional Details */}
+                {/* Tags */}
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-gray-700 font-semibold mb-2">
-                      Tags
+                      System Tags
                     </label>
-                    <input
-                      type="text"
-                      name="tags"
-                      value={formData.tags}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border rounded-lg font-semibold text-gray-500 focus:outline-none focus:ring-2 focus:ring-customMaroon"
-                      placeholder="Comma-separated tags"
-                    />
+                    <div className="flex flex-wrap gap-2">
+                      {SYSTEM_TAGS.map((tag) => (
+                        <span
+                          key={tag}
+                          className="bg-gray-100 text-customMaroon text-opacity-75 px-3 py-1 rounded-lg text-sm font-semibold"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                   <div>
                     <label className="block text-gray-700 font-semibold mb-2">
-                      Document Type
+                      Custom Tags
                     </label>
-                    <select
-                      name="documentType"
-                      value={formData.documentType}
+                    <input
+                      type="text"
+                      name="customTags"
+                      value={formData.customTags}
                       onChange={handleChange}
                       className="w-full px-4 py-3 border rounded-lg font-semibold text-gray-500 focus:outline-none focus:ring-2 focus:ring-customMaroon"
-                    >
-                      {DOCUMENT_TYPES.map((type) => (
-                        <option key={type} value={type}>
-                          {type}
-                        </option>
-                      ))}
-                    </select>
+                      placeholder="Enter custom tags (comma-separated)"
+                    />
                   </div>
                 </div>
 
                 {/* File Uploads */}
-                <div className="mt-6">
-                  <h3 className="text-xl font-semibold text-customMaroon mb-4 text-center">
-                    Upload Documents
+                <div>
+                  <h3 className="text-xl font-semibold text-customMaroon mb-8 mt-10 text-center">
+                    Document File Uploads - Multilingual
                   </h3>
                   <div className="grid md:grid-cols-3 gap-4">
                     {LANGUAGES.map((lang, index) => (
@@ -307,7 +405,7 @@ const DocumentUploadScreen = () => {
                         <label className="block text-gray-700 font-semibold mb-2">
                           {lang.label} Document
                         </label>
-                        <div className="relative border-2 border-gray-400 border-dotted  rounded-md p-2">
+                        <div className="relative border-2 border-customMaroon border-opacity-40 border-dotted  rounded-md p-2">
                           <input
                             type="file"
                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
@@ -315,7 +413,7 @@ const DocumentUploadScreen = () => {
                               handleFileChange(index, e.target.files[0])
                             }
                           />
-                          <div className="flex items-center justify-center font-semibold text-center text-gray-400">
+                          <div className="flex items-center justify-center font-semibold text-center text-customMaroon text-opacity-70">
                             <Upload size={19} className="mr-2" />
                             {selectedFiles[index]
                               ? selectedFiles[index].name
@@ -339,7 +437,7 @@ const DocumentUploadScreen = () => {
                       value={formData.author}
                       onChange={handleChange}
                       className="w-full px-4 py-3 border rounded-lg font-semibold text-gray-500 focus:outline-none focus:ring-2 focus:ring-customMaroon"
-                      placeholder="Author's name"
+                      placeholder="Primary Author name"
                       required
                     />
                   </div>
@@ -353,7 +451,7 @@ const DocumentUploadScreen = () => {
                       value={formData.contributors}
                       onChange={handleChange}
                       className="w-full px-4 py-3 border rounded-lg font-semibold text-gray-500 focus:outline-none focus:ring-2 focus:ring-customMaroon"
-                      placeholder="Other contributors"
+                      placeholder="Additional contributors (comma-separated)"
                     />
                   </div>
                 </div>
@@ -365,7 +463,7 @@ const DocumentUploadScreen = () => {
                     className="flex font-semibold items-center px-14 py-[10px] bg-customMaroon text-white rounded-lg hover:bg-customMaroonHover transition-colors"
                   >
                     <SaveIcon className="mr-2" />
-                    Upload Document
+                    Upload Document(s)
                   </button>
                 </div>
               </form>
